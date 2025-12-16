@@ -22,6 +22,21 @@ app.get("/", (req, res) => {
   });
 });
 
+// Show login page (SSR)
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+// Handle login form submission
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  console.log("Email:", email);
+  console.log("Password:", password);
+
+  res.send("Login data received");
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
