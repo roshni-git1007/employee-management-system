@@ -16,28 +16,50 @@ app.set("views", path.join(__dirname, "views"));
 
 // Temporary route (to test EJS)
 app.get("/", (req, res) => {
-  res.render("home", {
-    title: "Employee Management System",
-    username: "Admin"
-  });
+    res.render("home", {
+        title: "Employee Management System",
+        username: "Admin"
+    });
 });
 
 // Show login page (SSR)
 app.get("/login", (req, res) => {
-  res.render("login");
+    res.render("login");
 });
 
 // Handle login form submission
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  console.log("Email:", email);
-  console.log("Password:", password);
+    // Simple check (we’ll improve later)
+    if (email && password) {
+        // Set cookie
+        res.cookie("userEmail", email, {
+            httpOnly: true
+        });
+        return res.redirect("/dashboard");
+    }
+    res.redirect("/login");
+});
 
-  res.send("Login data received");
+app.get("/dashboard", (req, res) => {
+  const userEmail = req.cookies.userEmail;
+
+  if (!userEmail) {
+    return res.redirect("/login");
+  }
+
+  res.render("dashboard", {
+    email: userEmail
+  });
+});
+
+app.get("/logout", (req, res) => {
+  res.clearCookie("userEmail");
+  res.redirect("/login");
 });
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
