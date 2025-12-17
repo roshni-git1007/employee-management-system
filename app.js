@@ -1,9 +1,23 @@
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const fs = require("fs");
+const EMPLOYEE_FILE = "./data/employees.json";
 
 const app = express();
 const PORT = 3000;
+
+function readEmployees() {
+    const data = fs.readFileSync(EMPLOYEE_FILE, "utf-8");
+    return JSON.parse(data);
+}
+
+function writeEmployees(employees) {
+    fs.writeFileSync(
+        EMPLOYEE_FILE,
+        JSON.stringify(employees, null, 2)
+    );
+}
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -43,20 +57,49 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/dashboard", (req, res) => {
-  const userEmail = req.cookies.userEmail;
+    const userEmail = req.cookies.userEmail;
 
-  if (!userEmail) {
-    return res.redirect("/login");
-  }
+    if (!userEmail) {
+        return res.redirect("/login");
+    }
 
-  res.render("dashboard", {
-    email: userEmail
-  });
+    const employees = readEmployees();
+
+    res.render("dashboard", {
+        email: userEmail,
+        employees
+    });
+});
+
+// Show add employee page
+app.get("/addEmp", (req, res) => {
+    const userEmail = req.cookies.userEmail;
+    if (!userEmail) return res.redirect("/login");
+
+    res.render("addEmployee");
+});
+
+// Handle add employee form
+app.post("/addEmp", (req, res) => {
+    const userEmail = req.cookies.userEmail;
+    if (!userEmail) return res.redirect("/login");
+
+    const { name, department } = req.body;
+    const employees = readEmployees();
+
+    employees.push({
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        name,
+        department
+    });
+    writeEmployees(employees);
+
+    res.redirect("/dashboard");
 });
 
 app.get("/logout", (req, res) => {
-  res.clearCookie("userEmail");
-  res.redirect("/login");
+    res.clearCookie("userEmail");
+    res.redirect("/login");
 });
 
 // Start server

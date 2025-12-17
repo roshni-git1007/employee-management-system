@@ -8,6 +8,22 @@
 
     <p>Welcome, <strong><%= email %></strong></p>
 
+    <h2>Employees</h2>
+
+    <ul>
+      <% if (employees.length === 0) { %>
+        <li>No employees found</li>
+      <% } else { %>
+        <% employees.forEach(emp => { %>
+          <li>
+            <%= emp.name %> - <%= emp.department %>
+          </li>
+        <% }) %>
+      <% } %>
+    </ul>
+
+    <a href="/addEmp">Add Employee</a>
+    <br /><br />
     <a href="/logout">Logout</a>
   </body>
 </html>

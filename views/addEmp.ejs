@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Employee</title>
+  </head>
+  <body>
+    <h1>Add Employee</h1>
+
+    <form method="POST" action="/add-employee">
+      <div>
+        <label>Name:</label>
+        <input type="text" name="name" required />
+      </div>
+
+      <div>
+        <label>Department:</label>
+        <input type="text" name="department" required />
+      </div>
+
+      <button type="submit">Add</button>
+    </form>
+
+    <br />
+    <a href="/dashboard">Back to Dashboard</a>
+  </body>
+</html>
