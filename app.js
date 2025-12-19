@@ -3,6 +3,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
 const EMPLOYEE_FILE = "./data/employees.json";
+const authMiddleware = require("./middleware/authMiddleware")
 
 const app = express();
 const PORT = 3000;
@@ -56,34 +57,22 @@ app.post("/login", (req, res) => {
     res.redirect("/login");
 });
 
-app.get("/dashboard", (req, res) => {
-    const userEmail = req.cookies.userEmail;
-
-    if (!userEmail) {
-        return res.redirect("/login");
-    }
-
+app.get("/dashboard", authMiddleware, (req, res) => {
     const employees = readEmployees();
 
     res.render("dashboard", {
-        email: userEmail,
+        email: req.userEmail,
         employees
     });
 });
 
 // Show add employee page
-app.get("/addEmp", (req, res) => {
-    const userEmail = req.cookies.userEmail;
-    if (!userEmail) return res.redirect("/login");
-
-    res.render("addEmployee");
+app.get("/addEmp", authMiddleware, (req, res) => {
+    res.render("addEmp");
 });
 
 // Handle add employee form
-app.post("/addEmp", (req, res) => {
-    const userEmail = req.cookies.userEmail;
-    if (!userEmail) return res.redirect("/login");
-
+app.post("/addEmp", authMiddleware, (req, res) => {
     const { name, department } = req.body;
     const employees = readEmployees();
 
@@ -100,6 +89,48 @@ app.post("/addEmp", (req, res) => {
 app.get("/logout", (req, res) => {
     res.clearCookie("userEmail");
     res.redirect("/login");
+});
+
+// Show edit employee page
+app.get("/edit-employee/:id", authMiddleware, (req, res) => {
+    const employees = readEmployees();
+    const employee = employees.find(
+        emp => emp.id == req.params.id
+    );
+
+    if (!employee) {
+        return res.redirect("/dashboard");
+    }
+
+    res.render("editEmp", { employee });
+});
+
+// Handle employee update
+app.post("/edit-employee/:id", authMiddleware, (req, res) => {
+    const { name, department } = req.body;
+    const employees = readEmployees();
+
+    const updatedEmployees = employees.map(emp => {
+        if (emp.id == req.params.id) {
+            return { ...emp, name, department };
+        }
+        return emp;
+    });
+
+    writeEmployees(updatedEmployees);
+    res.redirect("/dashboard");
+});
+
+app.post("/delete-employee/:id", authMiddleware, (req, res) => {
+
+    const employees = readEmployees();
+
+    const filteredEmployees = employees.filter(
+        emp => emp.id != req.params.id
+    );
+
+    writeEmployees(filteredEmployees);
+    res.redirect("/dashboard");
 });
 
 // Start server

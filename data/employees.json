@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "id": 1766000066014,
+    "name": "parth",
+    "department": "engineer"
+  },
+  {
+    "id": 1766000084007,
+    "name": "karann",
+    "department": "supervisor"
+  },
+  {
+    "id": 1766000813397,
+    "name": "tank",
+    "department": "IT"
+  },
+  {
+    "id": 1766000828713,
+    "name": "Roshni",
+    "department": "Developer"
+  },
+  {
+    "id": 1766000852019,
+    "name": "patels",
+    "department": "Lead"
+  },
+  {
+    "id": 1766092299115,
+    "name": "John Doe",
+    "department": "Engineering"
+  },
+  {
+    "id": 1766112121879,
+    "name": "Edited Employee",
+    "department": "Finance"
+  }
+]

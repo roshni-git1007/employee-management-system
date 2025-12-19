@@ -1,29 +1,39 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Dashboard</title>
-  </head>
-  <body>
-    <h1>Admin Dashboard</h1>
+	<head>
+		<title>Dashboard</title>
+	</head>
+	<body>
+		<h1>Admin Dashboard</h1>
 
-    <p>Welcome, <strong><%= email %></strong></p>
+		<p>Welcome, <strong><%= email %></strong></p>
 
-    <h2>Employees</h2>
+		<h2>Employees</h2>
 
-    <ul>
-      <% if (employees.length === 0) { %>
-        <li>No employees found</li>
-      <% } else { %>
-        <% employees.forEach(emp => { %>
-          <li>
-            <%= emp.name %> - <%= emp.department %>
-          </li>
-        <% }) %>
-      <% } %>
-    </ul>
+		<ul>
+			<% if (employees.length === 0) { %>
+			<li>No employees found</li>
+			<% } else { %> <% employees.forEach(emp => { %>
+			<li>
+				<strong><%= emp.name %></strong>
+				(<%= emp.department %>)
 
-    <a href="/addEmp">Add Employee</a>
-    <br /><br />
-    <a href="/logout">Logout</a>
-  </body>
+				<!-- Edit -->
+				<a href="/edit-employee/<%= emp.id %>">Edit</a>
+
+				<!-- Delete -->
+				<form
+					method="POST"
+					action="/delete-employee/<%= emp.id %>"
+					style="display: inline">
+					<button type="submit">Delete</button>
+				</form>
+			</li>
+			<% }) %> <% } %>
+		</ul>
+
+		<a href="/addEmp">Add Employee</a>
+		<br /><br />
+		<a href="/logout">Logout</a>
+	</body>
 </html>
