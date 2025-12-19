@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 
 // Show login page (SSR)
 app.get("/login", (req, res) => {
-    res.render("login");
+    res.render("login", { error: null });
 });
 
 // Handle login form submission
@@ -54,7 +54,7 @@ app.post("/login", (req, res) => {
         });
         return res.redirect("/dashboard");
     }
-    res.redirect("/login");
+    res.render("/login", { error: "Invalid credentials" });
 });
 
 app.get("/dashboard", authMiddleware, (req, res) => {
